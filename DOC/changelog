@@ -1,0 +1,59 @@
+XML Validator Changelog.
+Still in beta phase, it works ok, but several features are not  implemented yet.
+
+0.0.5a (beta)
+
+-fixed chmod function
+-fixed some issues with UNIX systems
+-added automatic change possibility for premDays
+-automatic change possibility to account type
+
+0.0.5 (beta)
+
+-fixed parseFile (third argument depracated)
+-exceptions added (files you dont want to check)
+-saving raport to HTML (configurated)
+-polish language file added
+-experience validation
+-lookdir validation
+
+0.0.4 (beta)
+
+-fixed parseFile function 
+-small optimalization
+-checking php version if capable
+-script changes max_execution_time if safe mode is disabled
+-sex validation
+-enhanced premDays check
+-parseFile function rebuilded
+-possibility to delete files with missing account, or accounts with missing characters ($unlink)
+-rebuilding error_color function
+-fixed DOMDocument error
+-user error filter added
+-support for php4 has been disabled
+-fixed bug with counting examined files
+-multilanguage support
+-script structure changed
+-some small errors fixed
+
+0.0.3 (not stable)
+
+-ajax support enabled
+-file couner function
+-script output fixed
+-script optymalization up to 30%
+
+0.0.2 (not stable)
+
+-fixed bug with is_numeric
+-new xml features examined
+-first functions used
+
+0.0.1 (not stable)
+
+-xml sex axamination
+-xml voc examination
+-xml maglev examination
+-first release
+
+
