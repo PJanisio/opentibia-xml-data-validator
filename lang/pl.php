@@ -35,6 +35,7 @@ $error['sex_numeric'] = 'Atrybut sex nie jest wartością numeryczną';
 $error['sex_value'] = 'Atrybut sex ma nieprawidłową wartość';
 $error['lookdir_value'] = 'Atrybut lookdir ma nieprawidłową wartość';
 $error['exp_value'] = 'Atrybut exp ma nieprawidłową wartość';
+$error['vip_exists'] = 'Plik viplisty dla tego konta, nie powinien istnieć';
 
 //header msg
 
@@ -46,6 +47,7 @@ $head['file_count'] = 'PRZESKANOWANYCH PLIKÓW';
 
 //raport output titles
 
+$title['vip'] = 'Sprawdzanie viplisty: OK';
 $title['exp'] = 'Sprawdzanie experience: OK';
 $title['lookdir'] = 'Sprawdzanie lookdir: OK';
 $title['sex_dig'] = 'Sprawdzanie sex: OK'; 

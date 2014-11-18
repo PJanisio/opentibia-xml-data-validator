@@ -35,6 +35,13 @@ $error['sex_numeric'] = 'Sex attriubute is not numerical value';
 $error['sex_value'] = 'Sex attribute have not permitted value';
 $error['lookdir_value'] = 'Lookdir attribute have not permitted value';
 $error['exp_value'] = 'Exp attribute have not permitted value';
+$error['vip_exists'] = 'Missing account file for this VIP';
+$error['health'] = 'Health now and Health maximum have undesired value';
+$error['mana'] = 'Mana now and Mana maximum have undesired value';  
+$error['manamax_l'] = 'Mana max not corresponds to level'; 
+$error['healthmax_l'] = 'Health max not corresponds to level'; 
+$error['cap_l'] = 'Capacity not corresponds to level'; 
+
 
 //header msg
 
@@ -46,6 +53,7 @@ $head['file_count'] = 'EXAMINED FILES';
 
 //raport output titles
 
+$title['vip'] = 'Checking vip files: OK';
 $title['exp'] = 'Checking experience: OK';
 $title['lookdir'] = 'Checking lookdir: OK';
 $title['sex_dig'] = 'Checking sex: OK'; 
@@ -55,6 +63,9 @@ $title['types'] = 'Checking types: OK';
 $title['prem'] = 'Checking premDays: OK';
 $title['char'] = 'Checking characters: OK';
 $title['acc_num'] = 'Checking account number: OK';
+$title['health'] = 'Checking players health: OK';
+$title['mana'] = 'Checking players mana: OK';   
+$title['var_l'] = 'Level versus other player data: OK';
 
 //head messages, what kind of files we examined
 

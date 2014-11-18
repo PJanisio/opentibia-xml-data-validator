@@ -96,6 +96,7 @@ if($UNIX == 1)
 		@chmod($path['pla'], 0777);
 			//we shall change chmods of our working directories before unlinking some files
 			@chmod($path['acc'], 0777);
+				@chmod($path['vip'], 0777);
 			}
 
 	count_files(0);
@@ -126,7 +127,7 @@ echo '==============================<br>
 
 $err = 0; // no erros at begining :)
 $unlinked = 0; //deleted at beggining ? ;]
-$changed =0; //changed files at beggining 
+$changed = 0; //changed files at beggining 
 
 
 //ACCOUNTS CHECK
@@ -230,6 +231,7 @@ if(empty($xml['pass']))
         echo error_color(parseFile($file, 1).' '.$error['empty_pass'].'<br>', red);
 			++$err;
     }
+
       
         
 
@@ -277,7 +279,10 @@ if(empty($xml['type']) || $xml['type'] != 1)
 
 }
 }
-echo '* '.$title['types'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>'; 
+echo '* '.$title['types'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
+
+
+
 
 
 //premdays
@@ -293,6 +298,7 @@ foreach($files as $file) {
 	if(!in_array(parseFile($file,0), $except['acc']))
 						{
 $prem =  trim($xml['premDays']); 
+$lastsave = trim($xml['lastsaveday']);
 
 	
 	//string...lol
@@ -318,14 +324,8 @@ if(($prem == ''))
             }
 			
       
-        
-
-else if ($prem < 0)
-	{
-		echo error_color(parseFile($file, 1).' '.$error['prem_less_zero'].' ('.$prem.')<br>', red);
-			++$err;
-			}
-			
+        	
+		
 else if ($prem > $premDay['limit'])
 	{
 			echo error_color(parseFile($file, 1).' '.$error['prem_max'].' ('.$prem.')<br>', red);
@@ -348,9 +348,40 @@ else if ($prem > $premDay['limit'])
 									}
 								
 		}
+		
+		
 				}
+			
+
+
+else if ($prem < 0)
+	{
+		echo error_color(parseFile($file, 1).' '.$error['prem_less_zero'].' ('.$prem.')<br>', red);
+			++$err;
+
+				if($change == 1)
+					{
+				$xml['premDays'] = $premDay['rigid'];   //how many premdays will have
+				
+        $make_change = @file_put_contents($file, $xml->asXML());
+		
+						if(!$make_change)
+						{
+							echo $error['change'];
+							}
+								else
+								{
+									echo error_color(parseFile($file, 1).' Changed succesfully</br>', orange);
+									--$err;
+									++$changed;
+									}
+			}
 
 }
+
+
+}
+
 }
 
 echo '* '.$title['prem'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>'; 
@@ -418,7 +449,7 @@ gentime();
  $files = glob($path['pla'] . '*.xml');
 
 foreach($files as $file) {
-	if(!in_array(parseFile($file,0), $except['acc']))
+	if(!in_array(parseFile($file,0), $except['pla']))
 	{
     
     $xml = @simplexml_load_file($file);
@@ -493,6 +524,112 @@ foreach($files as $file) {
 echo ' * '.$title['acc_num'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 
 
+// health and health max
+gentime();
+
+ //$files = glob($path['pla'] . '*.xml');
+
+foreach($files as $file) {
+        
+        if(!in_array(parseFile($file,0), $except['pla']))
+        {
+    
+    $xml = @simplexml_load_file($file);
+    
+         $healthNow = (int)$xml->health['now'];
+         $healthMax = (int)$xml->health['max'];
+         
+         if($healthNow < 0 || $healthMax < 0)
+            {
+                
+                echo error_color(parseFile($file, 1).' '.$error['health'].' <br>', red);
+                ++$err;
+                
+                if($unlink == 1)
+                    {
+                                if($UNIX == 1)
+                                    {
+                                        @chmod($file, 0777);
+                                        }
+                $del = @unlink($file);
+                
+                    if(!$del)
+                        {
+                            echo $error['deleting'];
+                            }
+                                else
+                                {
+                                    echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
+                                    --$err;
+                                    ++$unlinked;
+                                                                        }
+                                    }
+                
+                             
+                
+            }
+    
+        }
+        
+        
+}
+
+echo ' * '.$title['health'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>'; 
+
+
+// mana & mana max
+gentime();
+
+ //$files = glob($path['pla'] . '*.xml');
+
+foreach($files as $file) {
+        
+        if(!in_array(parseFile($file,0), $except['pla']))
+        {
+    
+    $xml = @simplexml_load_file($file);
+    
+         $manaNow = (int)$xml->mana['now'];
+         $manaMax = (int)$xml->mana['max'];
+         
+         if($manaNow < 0 || $manaMax < 0)
+            {
+                
+                echo error_color(parseFile($file, 1).' '.$error['mana'].' <br>', red);
+                ++$err;
+                
+                if($unlink == 1)
+                    {
+                                if($UNIX == 1)
+                                    {
+                                        @chmod($file, 0777);
+                                        }
+                $del = @unlink($file);
+                
+                    if(!$del)
+                        {
+                            echo $error['deleting'];
+                            }
+                                else
+                                {
+                                    echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
+                                    --$err;
+                                    ++$unlinked;
+                                                                        }
+                                    }
+                
+                             
+                
+            }
+    
+        }
+        
+        
+}
+
+echo ' * '.$title['mana'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';   
+
+
 // sex
 gentime();
 
@@ -500,7 +637,7 @@ gentime();
 
 foreach($files as $file) {
 		
-		if(!in_array(parseFile($file,0), $except['acc']))
+		if(!in_array(parseFile($file,0), $except['pla']))
 		{
     
     $xml = @simplexml_load_file($file);
@@ -516,7 +653,7 @@ foreach($files as $file) {
 						
 						}
 						
-						if($s < 0 || $s > 1)
+						if($s < 0 || $s > 4)
 						{
 							echo error_color(parseFile($file, 1).' '.$error['sex_value'].' ('.$s.')<br>', red);
 						++$err;
@@ -532,7 +669,7 @@ echo ' * '.$title['sex_dig'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 gentime();
 
 foreach($files as $file) {
-	if(!in_array(parseFile($file,0), $except['acc']))
+	if(!in_array(parseFile($file,0), $except['pla']))
 	{
     
     $xml = @simplexml_load_file($file);
@@ -561,7 +698,7 @@ echo ' * '.$title['lookdir'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 gentime();
 
 foreach($files as $file) {
-	if(!in_array(parseFile($file,0), $except['acc']))
+	if(!in_array(parseFile($file,0), $except['pla']))
 	{
     
     $xml = @simplexml_load_file($file);
@@ -580,7 +717,258 @@ foreach($files as $file) {
 				}
 					
 
-echo ' * '.$title['exp'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';	
+echo ' * '.$title['exp'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
+
+
+gentime();
+
+foreach($files as $file) {
+	if(!in_array(parseFile($file,0), $except['pla']))
+	{
+		$xml = simplexml_load_file($file);
+
+		
+		
+		$pvoc = $xml['voc'];
+		$pcap = $xml['cap'];
+		$plevel = $xml['level'];
+		$phmax = $xml->health['max'];
+		$pmmax = $xml->mana['max'];
+
+	#capacity vs level
+
+		if($pvoc == 1) //sorc
+		{
+		$trueCap = (($plevel -1)*10)+300;
+			if($trueCap != $pcap)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['cap_l'].' should have: '.$trueCap.' now - '.$pcap.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 2) //druid
+		{
+		$trueCap = (($plevel-1)*10)+300;
+			if($trueCap != $pcap)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['cap_l'].' should have: '.$trueCap.' now - '.$pcap.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 3) //palladin
+		{
+		$trueCap = (($plevel-1)*20)+300;
+			if($trueCap != $pcap)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['cap_l'].' should have: '.$trueCap.' now - '.$pcap.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 4) //knight
+		{
+		$trueCap = (($plevel-1)*25)+300;
+			if($trueCap != $pcap)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['cap_l'].' should have: '.$trueCap.' now - '.$pcap.'<br>', red);
+									++$err;
+
+			}
+		}
+		
+#mana gain vs level
+
+if($pvoc == 1) //sorc
+		{
+		$trueMana = (($plevel-1)*30);
+			if($trueMana != $pmmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 2) //druid
+		{
+		$trueMana = (($plevel-1)*30);
+			if($trueMana != $pmmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+	if($pvoc == 3) //palladin
+		{
+		$trueMana = (($plevel-1)*15);
+			if($trueMana != $pmmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 4) //knight
+		{
+		$trueMana = (($plevel-1)*5);
+			if($trueMana != $pmmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+	#health vs level
+
+if($pvoc == 1) //sorc
+		{
+		$trueHealth = (($plevel-1)*5)+150;
+			if($trueHealth != $phmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 2) //druid
+		{
+		$trueHealth = (($plevel-1)*5)+150;
+			if($trueHealth != $phmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+	if($pvoc == 3) //palladin
+		{
+		$trueHealth = (($plevel-1)*10)+150;
+			if($trueHealth != $phmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+
+		if($pvoc == 4) //knight
+		{
+		$trueHealth = (($plevel-1)*15)+150;
+			if($trueHealth != $phmax)
+			{
+			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
+									++$err;
+
+			}
+		}
+
+	}
+}
+
+
+echo ' * '.$title['var_l'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
+
+//VIP ACCOUNTS
+
+
+
+gentime();
+
+$files = glob($path['vip'] . '*.xml');
+foreach($files as $file) {
+	if(!in_array(parseFile($file,0), $except['acc']))
+	{
+
+	 $xml = @simplexml_load_file($file);
+
+		
+ 			if(!$xml)
+			{
+				echo error_color(parseFile($file, 1).' '.$error['xml_syntax'].'<br>', red);
+				++$err;
+				
+				if($unlink == 1)
+					{
+						if($UNIX == 1)
+							{
+								@chmod($file, 0777);
+							}
+				
+				$del = @unlink($file);
+				
+					if(!$del)
+						{
+							echo $error['deleting'];
+							}
+								else
+								{
+									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
+									--$err;
+									++$unlinked;
+																		}
+				
+				}
+				
+				}
+
+
+			if(!file_exists($path['acc'].parseFile($file, 0)))
+					{
+					echo error_color(parseFile($file, 1).' '.$error['vip_exists'].'<br>', red);
+						++$err;
+
+
+						if($unlink == 1)
+					{
+						if($UNIX == 1)
+							{
+								@chmod($file, 0777);
+							}
+				
+				$del = @unlink($file);
+				
+					if(!$del)
+						{
+							echo $error['deleting'];
+							}
+								else
+								{
+									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
+									--$err;
+									++$unlinked;
+																		}
+				
+				}
+
+			
+
+					}
+
+					
+				}
+				}
+					
+
+echo ' * '.$title['vip'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';		
 
 
 
@@ -618,23 +1006,29 @@ echo $error['sum'].' ';
 	
 		$output .='</body>  
 </html>  ';
-
-if($saveLog == 2)
-{
-		ob_end_clean();
-	}	
+	
 		// Raport saved to file
 		
 		$date_rap = date("F_j_Y_g_i_a");
 		
 			$raport_file = './LOG/Raport_'.$date_rap.'.html';
+			    
 			
-					$fp = @fopen($raport_file, "x+"); 
+					$fp = @fopen($raport_file, "a+"); 
 
 						$fw = @fwrite($fp, $output);  //save
+						
+						
 							
 						
 							@fclose($fp); 
+							
+							if($saveLog == 2)
+							    {
+							
+							ob_end_clean();
+							    //cache cleaner
+							}
 						
 					}
 					
@@ -646,6 +1040,7 @@ if($saveLog == 2)
 				//and account folder :)
 			@chmod($path['pla'], $old_chmod_changed); 
 				@chmod($path['acc'], $old_chmod_changed);
+					@chmod($path['vip'], $old_chmod_changed);
 				}
 		
 
