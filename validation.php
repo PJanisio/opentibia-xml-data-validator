@@ -10,12 +10,9 @@ Validator main file
 */
 
 
-
 require_once ('config.php');
 
 //loading language file
-
-
 if(file_exists('lang/'.$lang.'.php'))
 	{
 		require_once('lang/'.$lang.'.php');
@@ -25,8 +22,6 @@ if(file_exists('lang/'.$lang.'.php'))
 				echo 'Wrong language type. Change in config.php: $lang.';
 				exit();
 				}
-				
-
 
 //php version check
 if(version_compare(PHP_VERSION, '5.0.0', '<'))
@@ -35,17 +30,12 @@ if(version_compare(PHP_VERSION, '5.0.0', '<'))
 		exit();
 		}
 		
-
-
 //checking safe mode
 if(!ini_get('safe_mode'))
 	{
-	
 //checking timeout ini file
-
 $timeout = ini_get('max_execution_time'); //ini file check
-
-if($timeout < 300)
+if($timeout < 540)
 {
 $set_timeout = @ini_set('max_execution_time',0);
 
@@ -54,33 +44,28 @@ $set_timeout = @ini_set('max_execution_time',0);
 }
 
 	}
-
-				
+			
 //user error finder
-
 //will not work if this function is disabled
+//what i wanted to say by writing this? dunno....
 
 if(!function_exists(simplexml_load_file))
 	{
 		echo $error['simplexml'];
 		exit();
-		}
-		
+		}	
 if(!function_exists(unlink))
 	{
 		echo $error['unlink'];
 		exit();
 		}
-
 //path is incorrect?
-
 if(!is_dir($path['acc']) || !is_dir($path['pla']))
 	{
 		echo $error['directory'];
 		exit();
 		}
 		
-	
 /*
 Main code
 */
@@ -89,25 +74,20 @@ ob_start();
 if($UNIX == 1)
 	{
 		
-		$old_chmod = substr(sprintf('%o', fileperms($path['pla'])), -4); //retriving chmod
-			
-				$old_chmod_changed = octdec($old_chmod); //we have to do it :/
-		
+		$old_chmod = substr(sprintf('%o', fileperms($path['pla'])), -4); //retriving chmod			
+				$old_chmod_changed = octdec($old_chmod); //we have to do it :/		
 		@chmod($path['pla'], 0777);
 			//we shall change chmods of our working directories before unlinking some files
 			@chmod($path['acc'], 0777);
 				@chmod($path['vip'], 0777);
 			}
 
-	count_files(0);
+		count_files(0);
 		count_files(1); // examined file counter
 	
 $date = date("F j, Y, g:i a");
 $validated = $pla_num + $acc_num;
 $excluded = $files.'0.xml';
-
-
-	
 
 //raport header
 
@@ -121,22 +101,16 @@ echo '==============================<br>
           ==============================<br><br><br>
 ';
 
-	
 //SOME NASTY SHIT
-	
-
 $err = 0; // no erros at begining :)
 $unlinked = 0; //deleted at beggining ? ;]
 $changed = 0; //changed files at beggining 
-
 
 //ACCOUNTS CHECK
 	echo '<b>'.$mode['accounts'].'</b><br><br>';
 
 //number of digits
-
-	gentime();
-		
+	gentime();		
 		$files = glob($path['acc'] .'*.xml');
 			foreach($files as $file) 
 			{
@@ -154,8 +128,7 @@ $changed = 0; //changed files at beggining
 							if($UNIX == 1)
 								{
 									@chmod($file, 0777);
-									}
-				
+									}			
 				$del = @unlink($file);
 				
 					if(!$del)
@@ -167,15 +140,12 @@ $changed = 0; //changed files at beggining
 									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
 									--$err;
 									++$unlinked;
-																		}
-				
+								}			
 				}
 				}
 				
 				$dig = strlen(trim(parseFile($file, 0)));
-					
-				
-				
+								
 						if ($dig != $account['digits'] + 4)
 							{
 								echo error_color(parseFile($file, 1).' '.$error['wrong_digits'].'('.($dig -4).')<br>', red);
@@ -199,12 +169,10 @@ $changed = 0; //changed files at beggining
 									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
 									--$err;
 									++$unlinked;
-																		}
+								}
 				
-				}
-										}
-							
-
+					}
+							}
 			}
 			}
 			
@@ -219,7 +187,8 @@ echo '* '.$title['digits'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 
 foreach($files as $file) {
     $xml = @simplexml_load_file($file);
-	
+	if(!$xml)
+			{
 	//echo $excluded;
 
 		if(!in_array(parseFile($file,0), $except['acc']))
@@ -232,11 +201,9 @@ if(empty($xml['pass']))
 			++$err;
     }
 
-      
-        
-
-}
-}
+						}
+			}
+						}
 echo '* '.$title['pass'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 
 //types
@@ -251,7 +218,6 @@ foreach($files as $file) {
 if(!in_array(parseFile($file,0), $except['acc']))
 						{
 if(empty($xml['type']) || $xml['type'] != 1)
-
     {
         echo error_color(parseFile($file, 1).' '.$error['wrong_type'].' ('.$xml['type'].')<br>', red);
 			++$err;
@@ -274,16 +240,10 @@ if(empty($xml['type']) || $xml['type'] != 1)
 								
 		}
     }
-      
-        
 
 }
 }
 echo '* '.$title['types'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
-
-
-
-
 
 //premdays
 
@@ -300,32 +260,23 @@ foreach($files as $file) {
 $prem =  trim($xml['premDays']); 
 $lastsave = trim($xml['lastsaveday']);
 
-	
 	//string...lol
 	//echo var_dump($prem);
     
-
 if(($prem == ''))
 
     {
 		
 			echo error_color(parseFile($file, 1).' '.$error['prem_without_value'].'<br>', red);
 				++$err;
-    }
-        
-        
-		
+    }	
         else if(is_numeric($prem) == false) 
             {
                 
                echo error_color(parseFile($file, 1).' '.$error['prem_not_int'].'<br>', red); 
 					++$err;
                 
-            }
-			
-      
-        	
-		
+            }		
 else if ($prem > $premDay['limit'])
 	{
 			echo error_color(parseFile($file, 1).' '.$error['prem_max'].' ('.$prem.')<br>', red);
@@ -345,14 +296,10 @@ else if ($prem > $premDay['limit'])
 									echo error_color(parseFile($file, 1).' Changed succesfully</br>', orange);
 									--$err;
 									++$changed;
-									}
-								
+									}					
 		}
-		
-		
-				}
-			
 
+				}
 
 else if ($prem < 0)
 	{
@@ -378,15 +325,10 @@ else if ($prem < 0)
 			}
 
 }
-
-
 }
-
 }
 
 echo '* '.$title['prem'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>'; 
-
-
 
 gentime();
 
@@ -402,9 +344,7 @@ if(!in_array(parseFile($file,0), $except['acc']))
 				
 				{
 					echo error_color(parseFile($file, 1).' '.$error['empty_account'].'<br>', red);
-				++$err;		
-							
-									
+				++$err;								
 										
 			if($unlink == 1)
 					{
@@ -431,13 +371,7 @@ if(!in_array(parseFile($file,0), $except['acc']))
 						}
 						}
 						
-				
-				
-
-
 echo '* '.$title['char'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
-
-
 
 //PLAYERS
 
@@ -479,16 +413,11 @@ foreach($files as $file) {
 									++$unlinked;
 																		}
 				
+				}			
 				}
 				
-				}
-				
-   
 			$a =  trim($xml['account']); 
-			
-			
 
-	
 	if(!file_exists($path['acc'].$a.'.xml'))
 		{
 				
@@ -519,10 +448,7 @@ foreach($files as $file) {
 			
 }
 }
-
-
 echo ' * '.$title['acc_num'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
-
 
 // health and health max
 gentime();
@@ -564,9 +490,7 @@ foreach($files as $file) {
                                     ++$unlinked;
                                                                         }
                                     }
-                
-                             
-                
+
             }
     
         }
@@ -575,7 +499,6 @@ foreach($files as $file) {
 }
 
 echo ' * '.$title['health'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>'; 
-
 
 // mana & mana max
 gentime();
@@ -617,14 +540,12 @@ foreach($files as $file) {
                                     ++$unlinked;
                                                                         }
                                     }
-                
-                             
+             
                 
             }
     
         }
-        
-        
+
 }
 
 echo ' * '.$title['mana'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';   
@@ -685,8 +606,7 @@ foreach($files as $file) {
 								echo error_color(parseFile($file, 1).' '.$error['lookdir_value'].' ('.$ldir.')<br>', red);
 									++$err;
 								
-								}
-				
+								}			
 				}
 				}
 				
@@ -726,9 +646,7 @@ foreach($files as $file) {
 	if(!in_array(parseFile($file,0), $except['pla']))
 	{
 		$xml = simplexml_load_file($file);
-
-		
-		
+	
 		$pvoc = $xml['voc'];
 		$pcap = $xml['cap'];
 		$plevel = $xml['level'];
@@ -772,7 +690,6 @@ foreach($files as $file) {
 			}
 		}
 
-
 		if($pvoc == 4) //knight
 		{
 		$trueCap = (($plevel-1)*25)+300;
@@ -797,7 +714,6 @@ if($pvoc == 1) //sorc
 			}
 		}
 
-
 		if($pvoc == 2) //druid
 		{
 		$trueMana = (($plevel-1)*30);
@@ -805,7 +721,6 @@ if($pvoc == 1) //sorc
 			{
 			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
 									++$err;
-
 			}
 		}
 
@@ -820,7 +735,6 @@ if($pvoc == 1) //sorc
 			}
 		}
 
-
 		if($pvoc == 4) //knight
 		{
 		$trueMana = (($plevel-1)*5);
@@ -828,11 +742,8 @@ if($pvoc == 1) //sorc
 			{
 			echo error_color(parseFile($file, 1).' '.$error['manamax_l'].' should have: '.$trueMana.' now - '.$pmmax.'<br>', red);
 									++$err;
-
 			}
 		}
-
-
 	#health vs level
 
 if($pvoc == 1) //sorc
@@ -842,11 +753,8 @@ if($pvoc == 1) //sorc
 			{
 			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
 									++$err;
-
 			}
 		}
-
-
 		if($pvoc == 2) //druid
 		{
 		$trueHealth = (($plevel-1)*5)+150;
@@ -865,7 +773,6 @@ if($pvoc == 1) //sorc
 			{
 			echo error_color(parseFile($file, 1).' '.$error['healthmax_l'].' should have: '.$trueHealth.' now - '.$phmax.'<br>', red);
 									++$err;
-
 			}
 		}
 
@@ -889,8 +796,6 @@ echo ' * '.$title['var_l'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';
 
 //VIP ACCOUNTS
 
-
-
 gentime();
 
 $files = glob($path['vip'] . '*.xml');
@@ -898,9 +803,7 @@ foreach($files as $file) {
 	if(!in_array(parseFile($file,0), $except['acc']))
 	{
 
-	 $xml = @simplexml_load_file($file);
-
-		
+	 $xml = @simplexml_load_file($file);	
  			if(!$xml)
 			{
 				echo error_color(parseFile($file, 1).' '.$error['xml_syntax'].'<br>', red);
@@ -924,28 +827,21 @@ foreach($files as $file) {
 									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
 									--$err;
 									++$unlinked;
-																		}
-				
+																		}				
 				}
 				
 				}
-
-
 			if(!file_exists($path['acc'].parseFile($file, 0)))
 					{
 					echo error_color(parseFile($file, 1).' '.$error['vip_exists'].'<br>', red);
 						++$err;
-
-
 						if($unlink == 1)
 					{
 						if($UNIX == 1)
 							{
 								@chmod($file, 0777);
-							}
-				
-				$del = @unlink($file);
-				
+							}			
+				$del = @unlink($file);			
 					if(!$del)
 						{
 							echo $error['deleting'];
@@ -955,23 +851,15 @@ foreach($files as $file) {
 									echo error_color(parseFile($file, 1).' Deleted succesfully</br>', green);
 									--$err;
 									++$unlinked;
-																		}
-				
+																		}				
 				}
 
-			
-
-					}
-
-					
+					}					
 				}
 				}
 					
 
 echo ' * '.$title['vip'].' ['.round(gentime(), 4).' '.$sec.'.]<br><br>';		
-
-
-
 
 echo $error['sum'].' ';
 	listErrors();
@@ -979,7 +867,6 @@ echo $error['sum'].' ';
 		
 		if($unlink == 1)
 				{
-	
 					echo $error['unlinked'].' ';
 							deletedFiles();
 								echo '</br>';
@@ -989,8 +876,7 @@ echo $error['sum'].' ';
 						{
 							echo $error['changed'].' ';
 							changedFiles();
-							}
-				
+							}				
 				if($saveLog == 1 || $saveLog == 2)
 					{
 				
@@ -1016,23 +902,15 @@ echo $error['sum'].' ';
 			
 					$fp = @fopen($raport_file, "a+"); 
 
-						$fw = @fwrite($fp, $output);  //save
-						
-						
-							
-						
+						$fw = @fwrite($fp, $output);  //save													
 							@fclose($fp); 
 							
 							if($saveLog == 2)
-							    {
-							
+							    {							
 							ob_end_clean();
 							    //cache cleaner
-							}
-						
-					}
-					
-				
+							}						
+					}				
 		$set_last_timeout = @ini_set('max_execution_time',$timeout); //change exec.time to default value
 		if($UNIX == 1)
 			{
