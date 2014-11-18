@@ -66,7 +66,7 @@ $mode['players'] = 'Results of checking players folder';
 $misc['core_changed'] = 'Core file of Validator has been changed! You run now at your own risk';
 $misc['raport_chmod'] = 'LOG folder should have read & write acces! (chmod 777)';
 $sec = 'sec';
-$gener = 'Raport is generating now, please be patience';
+$gener = 'Raport is generating now, please be patient';
 $eta = 'It may take few seconds or few minutes, it depends of number of files to be examined';
 
 
