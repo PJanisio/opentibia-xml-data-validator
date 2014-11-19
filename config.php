@@ -1,5 +1,4 @@
 <?php
-
 /*
 ====+++========
 Open Tibia XML Data Validator
@@ -9,65 +8,52 @@ Configuration file
 ====+++========
 */
 
-
-$UNIX = 0; //set this to 1 if u use UNIX`s family operational system, if Windows set this to 0.
-
+#################### STANDARD SETTINGS #######################
 $lang = 'en'; // choose your language 'pl' for polish, and 'en' - english
-
-/*
-'en' means name of file included in lang folder, you can export your own
-translation there and name file will be the value of $lang
-*/
-
-
-$path['acc'] = 'G:/OTS/data/accounts/'; // accounts folder path f.e /home/pavlus/ots/accounts/
-$path['pla'] = 'G:/OTS/data/players/'; // players path
-$path['vip'] = 'G:/OTS/data/vip/'; //vips path
-
-//REMEMBER TO USE ONLY "/", it is true on windows and linux but "\\" will corrupt the results.
-
-$saveLog = 1; 
-//0 - no html raport export, 
-//1- with raport export, 
-//2- only export to file (without listing in browser - good while working with cron)
-
+$path['data'] = 'G:/OTS/data/'; // path to your opentibia server data directory
+$saveLog = 1; //0 - no raport / 1 - default html export / 2 - export to file
 $account['digits'] = 6;	//number of digits for account
+$premDay['limit'] = 300; // if player have more than $premDay will show error (yurots new year bug)
 
-$premDay['limit'] = 250; // if player have more than $premDay will show error
-$premDay['rigid'] = 1; //script will set this value if someone exceeded limit
-//$maxchars = 1; // maximum# of players attached to one account, type 0 to disable
-
-
-####################USE THIS SETTINGS CAREFULLY#######################
-$change = 0; //set this to "1" if u want script changed some values automatically
-// Script now offers changes of:
-
-#1. premDays if it`s bigger than limit
-#2. ------
-
+#################### FILE WRITE/REMOVE SETTINGS #######################
+$change = 0; //set this to "1" if u want to allow modifying files by this script
+$premDay['rigid'] = 1; //if modifying is allowed, script will set 1 premday when player exceed the limit of premdays 
 $unlink = 0; // set this to 0 if you dont want validator delete empty accounts or missing player account
-//your accounts and players folders have to have write-access (chmod 777 in linux)
 //remember to make a BACKUP before running script!
 
-######################################################################
+######################## EXCEPTIONS #########################
+$except['acc'] = array('0.xml', '1.xml'); //if you doesn`t want to examine some account numbers, divide by coma.
+$except['pla']= array('Marco Polo.xml', 'GM.xml'); //the same exception for players
 
-$except['acc'] = array('0.xml'); //if you doesn`t want to examine some account numbers, divide by coma.
-$except['pla']= array('Marco Polo.xml'); //the same exception for players
+#END OF CONFIGURATION
+
+
+
 
 /*
-DO NOT EDIT! UNDER YOU KNOW WHAT ARE YOU DOING
-
-
+DO NOT EDIT CODE BELOW! UNDER YOU KNOW WHAT ARE YOU DOING
 ##########################################################
 */
 
-
-
-//constant
+//constants
 
 define ("VERSION", "0.0.5a");
 define("STATUS", "Beta");
 define("CORE_SIZE", "11891");
+
+//OS check
+
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $UNIX = 0;
+} else {
+    $UNIX = 1;
+}
+
+//generate players, accounts, vip folder
+
+$path['acc'] = $path['data'].'/accounts/'; // accounts folder path f.e /home/pavlus/ots/accounts/
+$path['pla'] = $path['data'].'/players/'; // players path
+$path['vip'] = $path['data'].'/vip/'; //vip path
 
 //functions
 

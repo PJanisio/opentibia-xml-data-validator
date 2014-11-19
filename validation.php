@@ -60,7 +60,7 @@ if(!function_exists(unlink))
 		exit();
 		}
 //path is incorrect?
-if(!is_dir($path['acc']) || !is_dir($path['pla']))
+if(!is_dir($path['acc']) || !is_dir($path['pla']) || !is_dir($path['vip']))
 	{
 		echo $error['directory'];
 		exit();

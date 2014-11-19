@@ -13,7 +13,7 @@ require_once('./config.php'); //this line must be included!
 //error messages
 
 $error['php_version'] = 'Twoja wersja PHP jest przestarzała, wymagane jest co najmniej PHP w wersji > 5.0.0';
-$error['directory'] = 'Ścieżka do folderów account i players jest niepoprawna, musisz zmienić to w configu.';
+$error['directory'] = 'Ścieżka do folderów account, players lub vip jest niepoprawna, musisz zmienić to w config.php.';
 $error['simplexml'] = 'Funkcja simplexml_load_file niedostępna, sprawdź php.ini';
 $error['unlink'] = 'Twoje PHP nie supportuje funkcji unlink, zmień ustawienia w php.ini.';
 $error['xml_syntax'] = 'Błąd krytyczny, składnia XML niepoprawna!';

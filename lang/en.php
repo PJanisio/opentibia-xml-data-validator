@@ -13,7 +13,7 @@ require_once('./config.php'); //this line must be included!
 //error messages
 
 $error['php_version'] = 'Your PHP version is out of date! At least 5.0.0 version is required. Script is terminating';
-$error['directory'] = 'You have entered bad path to your account and player catalogue. Change this in config.php file. Script is now terminating.';
+$error['directory'] = 'You have entered bad path to your account, players or vip catalogue. Change this in config.php file. Script is now terminating.';
 $error['simplexml'] = 'Your PHP doesn`t support simplexml_file_load function. Script is terminating.';
 $error['unlink'] = 'Your PHP doesn`t support unlink function. Script is terminating.';
 $error['xml_syntax'] = 'Fatal error: Syntax broken in XML file!';
